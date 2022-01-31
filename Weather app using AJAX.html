@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      body {
+        background-color: orange;
+        font-family: sans-serif;
+        font-weight: bold;
+        justify-content: center;
+      }
+
+      body div {
+        margin-top: 300px;
+        margin-left: 600px;
+
+        /* margin-right: auto; */
+      }
+      h1 {
+        padding: 0;
+        margin: 0;
+        font-weight: bolder;
+        justify-content: center;
+        font-family: sans-serif;
+        text-align: auto;
+        color: rgb(5, 61, 9);
+
+        font-size: 50px;
+      }
+      .forecast {
+        background-color: green;
+        padding: 3px;
+        height: 32px;
+        border: 2px solid brown;
+        border-radius: 4px;
+        padding: 5px;
+      }
+      #zipcode {
+        padding: 5px;
+      }
+      /* div {
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto;
+    } */
+      #weatherInfo {
+        margin-left: 600px;
+      }
+
+      aside {
+        color: rgba(0, 2, 2, 0.945);
+        font-size: large;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <div>
+        <h1>Ninja Weather App</h1>
+        <p>Please enter zip code</p>
+        <input type="number" id="zipcode" placeholder="enter zip code" />
+        <button class="forecast" id="confirm">Confirm</button>
+        <!-- <section id="weatherInfo"></section> -->
+      </div>
+      <aside id="weatherInfo"></aside>
+    </section>
+    <script>
+      "use strict";
+      //getData input fun
+      const getData = function () {
+        let zipCode = document.getElementById("zipcode").value;
+        if (zipCode === "") {
+          alert("input field empty try again");
+        } else {
+          console.log(`zip code is ${zipCode}`);
+          getWeather(zipCode);
+        }
+      };
+      const responseHandler = function () {
+        if (this.status == 200) {
+          console.log(this.response);
+          const data = this.response;
+          console.log(`city is ${data.name}`);
+          console.log(`temperature is ${data.main.temp}`);
+          console.log(`description is ${data.weather[0].description}`);
+
+          let html = "<p>City:" + data.name + "</p>";
+          html += "<p>Temperature:" + data.main.temp + "</p>";
+          html += "<p>" + data.weather[0].description + "</p>";
+
+          document.getElementById("weatherInfo").innerHTML = html;
+        } else {
+          document.getElementById("weatherInfo").innerHTML =
+            "<p> weather data not available!!!! </p>";
+        }
+      };
+
+      //getWeather fun
+      const getWeather = function (zipCode) {
+        console.log(`zip code is ${zipCode}`);
+        let endpoint = "https://api.openweathermap.org/data/2.5/weather";
+        const apiKey = "45fca57a32ea1afc36c5a3a90253ac90";
+        let url =
+          endpoint + "?zip=" + zipCode + "&units=imperial&appid=" + apiKey;
+        console.log(`url is ${url}`);
+
+        let xhr = new XMLHttpRequest();
+        xhr.addEventListener("load", responseHandler);
+        xhr.responseType = "json";
+        xhr.open("GET", url);
+        xhr.send();
+      };
+
+      document
+        .querySelector(".forecast")
+        .addEventListener("click", function () {
+          getData();
+        });
+    </script>
+  </body>
+</html>
